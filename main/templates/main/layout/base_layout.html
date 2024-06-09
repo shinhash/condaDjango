@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+    {% include 'main/layout/head_cdn_layout.html' %}
+    {% include 'main/layout/head_custom_layout.html' %}
+</head>
+<body>
+    <div>
+        <div id="top">
+            {% include 'main/layout/top_layout.html' %}
+        </div>
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div id="bottom">
+
+        </div>
+    </div>
+    <div class="hidden_field">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" id="list_post_url" value="{% url 'post/list' %}">
+        <input type="hidden" id="detail_post_url" value="{% url 'post/detail' %}">
+        <input type="hidden" id="update_post_url" value="{% url 'post/update' %}">
+    </div>
+</body>
+</html>

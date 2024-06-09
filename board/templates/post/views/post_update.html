@@ -1,0 +1,57 @@
+{% extends 'post/layout/base_layout.html' %}
+{% load static %}
+{% block content %}
+<script>
+    $(function(){
+        $('#post_cont').summernote({
+            height: 300,                 // 에디터 높이
+            minHeight: null,             // 최소 높이
+            maxHeight: null,             // 최대 높이
+            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            lang: "ko-KR",					// 한글 설정
+            placeholder: '최대3000자까지 쓸 수 있습니다'	,//placeholder 설정
+            toolbar: [
+                // [groupName, [list of button]]
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+            fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+        });
+    });
+</script>
+<div class="container">
+    <form id="update_post_form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="post_title">제목</label>
+            <input type="text" class="form-control" id="post_title" name="post_title" value="{{ post.POST_TITLE }}" readonly>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="post_cont"> 내용 </label>
+            <textarea name="post_cont" id="post_cont" maxlength="10000" cols="30" rows="5" placeholder="내용을 입력해주세요" class="with-border">
+                {{ post.POST_CONT }}
+            </textarea>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="post_image"> 파일 </label>
+            {% if post.IMAGE_VIEW_PATH %}
+                <img src="{{ post.IMAGE_VIEW_PATH }}" class="form-control" alt="post_img" style="height: 150px; width: 150px;" id="post_image">
+            {% endif %}
+        </div>
+        <input id="post_id" name="post_id" type="hidden" value="{{ post.POST_ID }}">
+    </form>
+    <br>
+    <div class="d-flex justify-content-end">
+        <input type="button" class="btn btn-primary" value="적용" style="margin-right: 10px;" onclick="post_update()">
+        <input type="button" class="btn btn-secondary" value="취소" style="margin-right: 10px;" onclick="post_detail_info('{{ post.POST_ID }}', 'detail')">
+    </div>
+    <hr/>
+</div>
+{% endblock %}

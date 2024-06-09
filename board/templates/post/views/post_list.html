@@ -1,0 +1,71 @@
+{% extends 'post/layout/base_layout.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <br><br>
+    <div class="post_top">
+        <h1 class="text-center">게시판</h1>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="d-flex justify-content-end">
+                <input type="text" id="search_word" />
+                <input type="button" value="검색" onclick="post_search()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="post_bottom">
+        <table class="table table-hover table-striped text-center">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성일</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in post_list %}
+                <tr class="post_detail_tr" post_id="{{ post.POST_ID }}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ post.POST_TITLE }}</td>
+                    <td>{{ post.REG_DT }}</td>
+                    <td>{{ post.REG_USER_ID }}</td>
+                    <td>{{ post.VIEW_CNT }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-primary" href="{% url 'post/create' %}">등록</a>
+    </div>
+    <hr>
+    <br>
+    <div class="paginator">
+        <ul class="pagination justify-content-center">
+            {% for i in 'x'|rjust:page_len %}
+                {% if forloop.counter == page_num %}
+                    <li>
+                        <p class="text-secondary" style="margin-right: 10px; font-size: 20px;">
+                            {{ forloop.counter }}
+                        </p>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="javascript:" class="current text-secondary"
+                           onclick="post_list('{{ forloop.counter }}')"
+                           style="margin-right: 10px; text-decoration-line: none; font-weight: bold; font-size: 20px;">
+                            {{ forloop.counter }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
