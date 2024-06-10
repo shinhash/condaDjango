@@ -1,3 +1,4 @@
+import json
 from math import ceil
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
@@ -22,12 +23,17 @@ def post_list(request):
     if view_cnt is None or view_cnt == '':
         view_cnt = 10
 
+    search_word = request.POST.get('search_word')
+    if search_word is None:
+        search_word = ''
+
     page_num = int(page_num)
     view_cnt = int(view_cnt)
 
     query_params = {
         'query_id': 'selectPostCount',
         'board_id': 'BD001',
+        'search_word': search_word
     }
     sql = render_to_string('post/model/sql/post.sql', query_params)
     post_cnt = dict_fetchall(sql)[0].get('POST_CNT')
@@ -40,7 +46,8 @@ def post_list(request):
         'query_id': 'selectPostList',
         'board_id': 'BD001',
         'page_num_limit': page_num_limit,
-        'view_cnt': view_cnt
+        'view_cnt': view_cnt,
+        'search_word': search_word
     }
     sql = render_to_string('post/model/sql/post.sql', query_params)
     result = dict_fetchall(sql)
@@ -57,8 +64,10 @@ def post_list(request):
         'post_list': result,
         'page_num': page_num,
         'post_cnt': post_cnt,
+        'view_cnt': view_cnt,
         'page_len': page_len,
         'post_all_cnt': post_cnt,
+        'search_word': search_word
     }
     return render(request, 'post/views/post_list.html', context)
 
@@ -91,6 +100,8 @@ def post_create(request):
         post_cont = request.POST.get('post_cont')
         logger.debug('post_cont : ' + str(post_cont))
 
+        user_id = request.session.get('sign_session')
+
         query_params = {
             'query_id': 'insertPost',
             'board_id': 'BD001',
@@ -99,7 +110,8 @@ def post_create(request):
             'post_cont': post_cont,
             'file_origin_name': file_origin_name,
             'file_trance_name': file_trance_name,
-            'image_view_path': image_view_path
+            'image_view_path': image_view_path,
+            'user_id': user_id
         }
         sql = render_to_string('post/model/sql/post.sql', query_params)
         logger.debug('sql : ' + str(sql))
@@ -116,6 +128,9 @@ def post_create(request):
 
 def post_detail(request):
     if request.method == 'POST':
+
+        logger.debug(request.POST)
+
         detail_post_id = request.POST.get('post_id')
         view_type = request.POST.get('view_type')
 
@@ -183,3 +198,23 @@ def post_update(request):
         return JsonResponse(context)
     return redirect('post/list')
 
+
+def post_delete(request):
+    if request.method == 'POST':
+        post_data = json.loads(request.body)
+        post_id = post_data.get('post_id')
+
+        logger.debug("post_id info = " + post_id)
+
+        query_params = {
+            'query_id': 'deletePost',
+            'board_id': 'BD001',
+            'post_id': post_id
+        }
+        sql = render_to_string('post/model/sql/post.sql', query_params)
+        result = dict_fetchall(sql)
+        context = {
+            'result': 'SUCCESS'
+        }
+        return JsonResponse(context)
+    return redirect('post/list')

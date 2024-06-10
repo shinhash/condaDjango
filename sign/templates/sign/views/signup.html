@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
+    <title>회원가입</title>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -13,31 +13,43 @@
 </head>
 <body>
     <div>
-        <p>SIGN IN</p>
-        <form id="sign_in_form" style="display: inline">
+        <p>SIGN UP</p>
+        <form id="sign_up_form" style="display: inline">
             {% csrf_token %}
             <table>
                 <tr>
-                    <td>아이디</td>
+                    <td>ID</td>
                     <td>
                         <input type="text" id="sign_id" name="sign_id" />
                     </td>
                 </tr>
                 <tr>
-                    <td>비밀번호</td>
+                    <td>PW</td>
                     <td>
                         <input type="password" id="sign_pw" name="sign_pw" />
                     </td>
                 </tr>
+                <tr>
+                    <td>RE PW</td>
+                    <td>
+                        <input type="password" id="sign_pw_re" name="sign_pw_re" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>NAME</td>
+                    <td>
+                        <input type="text" id="nick_name" name="nick_name" />
+                    </td>
+                </tr>
             </table>
-            <input type="button" value="로그인" onclick="sign_in_process()">
+            <input type="button" value="회원가입" onclick="sign_up_process()">
         </form>
     </div>
     <div>
         <img id="loading-bar" src="{% static 'sign/img/loading_img.gif' %}" style="display: none">
     </div>
-    <div>
-        <a class="nav-link" href="{% url 'sign/signup' %}">you don't have account???</a>
-    </div>
+        {% if 'sign_session' in request.session %}
+            {{ request.session.sign_session }}
+        {% endif %}
 </body>
 </html>

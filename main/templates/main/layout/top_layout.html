@@ -6,16 +6,19 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav nav justify-content-around">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'post/list' %}">게시판</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">회원가입</a>
-                </li>
+                {% if 'sign_session' in request.session %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'sign/signout' %}">로그아웃</a>
                 </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sign/signin' %}">로그인</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

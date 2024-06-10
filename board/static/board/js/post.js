@@ -1,7 +1,7 @@
 
 $(function(){
     $('.post_detail_tr').on('click', function(){
-       let post_id = $(this).attr('post_id');
+       let post_id = $(this).children('.postIdTd').html();
        let view_type = 'detail'
        post_detail_info(post_id, view_type);
     });
@@ -12,59 +12,27 @@ $(function(){
 });
 
 
+function page_move(page_num){
+    let search_word = $("#sr_word").val();
+    post_list(page_num, search_word);
+}
+
+
 function post_list(page_num, sr_text){
-
-    let list_form_tag = document.createElement('form');
-    list_form_tag.setAttribute('action', $('#list_post_url').val());
-    list_form_tag.setAttribute('method', 'post');
-
-    let list_page_tag = document.createElement('input');
-    list_page_tag.setAttribute('type', 'hidden');
-    list_page_tag.setAttribute('name', 'page_num');
-    list_page_tag.setAttribute('value', page_num);
-
-    let search_word = document.createElement('input');
-    search_word.setAttribute('type', 'hidden');
-    search_word.setAttribute('name', 'search_word');
-    search_word.setAttribute('value', sr_text);
-
-    let list_csrf_token = document.createElement('input');
-    list_csrf_token.setAttribute('type', 'hidden');
-    list_csrf_token.setAttribute('name', 'csrfmiddlewaretoken');
-    list_csrf_token.setAttribute('value', $('#csrf_token').val());
-
-    list_form_tag.appendChild(list_page_tag);
-    list_form_tag.appendChild(list_csrf_token);
-    document.body.appendChild(list_form_tag);
-    list_form_tag.submit();
+    $("#page_num").val(page_num);
+    $("#search_word").val(sr_text);
+    $("#postForm").attr('action', $('#list_post_url').val());
+    $("#postForm").attr('method', 'post');
+    $("#postForm").submit();
 }
 
 
 function post_detail_info(post_id_value, view_type){
-    let form_tag = document.createElement('form');
-    form_tag.setAttribute('action', $('#detail_post_url').val());
-    form_tag.setAttribute('method', 'post');
-
-    let post_id = document.createElement('input');
-    post_id.setAttribute('type', 'hidden');
-    post_id.setAttribute('name', 'post_id');
-    post_id.setAttribute('value', post_id_value);
-
-    let csrf_token = document.createElement('input');
-    csrf_token.setAttribute('type', 'hidden');
-    csrf_token.setAttribute('name', 'csrfmiddlewaretoken');
-    csrf_token.setAttribute('value', $('#csrf_token').val());
-
-    let view_type_tag = document.createElement('input');
-    view_type_tag.setAttribute('type', 'hidden');
-    view_type_tag.setAttribute('name', 'view_type');
-    view_type_tag.setAttribute('value', view_type);
-
-    form_tag.appendChild(post_id);
-    form_tag.appendChild(csrf_token);
-    form_tag.appendChild(view_type_tag);
-    document.body.appendChild(form_tag);
-    form_tag.submit();
+    $("#post_id").val(post_id_value);
+    $("#view_type").val(view_type);
+    $("#postForm").attr('action', $('#detail_post_url').val());
+    $("#postForm").attr('method', 'post');
+    $("#postForm").submit();
 }
 
 
@@ -109,7 +77,7 @@ function post_delete(){
     let delete_post_url = $('#delete_post_url').val();
     let post_id = $('#post_id').val();
     let list_post_url = $("#list_post_url").val();
-    let csrf_token = $("#csrf_token").val();
+    let csrf_token = $("#csrfmiddlewaretoken").val();
 
     let data_info = {
         'post_id' : post_id
@@ -174,6 +142,6 @@ function post_create(){
 
 
 function post_search(){
-    let search_word = $('#search_word').val();
+    let search_word = $('#sr_word').val();
     post_list(1, search_word);
 }

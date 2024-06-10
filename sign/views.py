@@ -49,7 +49,37 @@ def signin(request):
 
 def signup(request):
     if request.method == 'POST':
-        return render(request, 'sign/views/sign_up.html')
+        sign_id = request.POST.get('sign_id')
+        sign_pw = request.POST.get('sign_pw')
+        name = request.POST.get('nick_name')
+
+        sign_up_result = 'FAIL'
+        error_code = 'DUPLE'
+
+        query_params = {
+            'query_id': 'selectSignUser',
+            'sign_id': sign_id,
+        }
+        sql = render_to_string('sign/model/sql/sign.sql', query_params)
+        dc_result = dict_fetchall(sql)
+
+        if dc_result is None or len(dc_result) == 0:
+            error_code = 'ONLY'
+            query_params = {
+                'query_id': 'insertSignUser',
+                'sign_id': sign_id,
+                'sign_pw': sign_pw,
+                'name': name,
+            }
+            sql = render_to_string('sign/model/sql/sign.sql', query_params)
+            result = dict_fetchall(sql)
+            sign_up_result = 'SUCCESS'
+
+        context = {
+            'result': sign_up_result,
+            'error_code': error_code
+        }
+        return JsonResponse(context)
     return render(request, 'sign/views/signup.html')
 
 
@@ -58,4 +88,4 @@ def signout(request):
         del(request.session['sign_session'])
 
     context = {}
-    return redirect('signin')
+    return redirect('sign/signin')

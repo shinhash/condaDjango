@@ -1,5 +1,6 @@
 {% extends 'post/layout/base_layout.html' %}
 {% load static %}
+{% load mathfilters %}
 {% block content %}
 <div class="container">
     <br><br>
@@ -11,7 +12,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="d-flex justify-content-end">
-                <input type="text" id="search_word" />
+                <input type="text" id="sr_word" value="{{ search_word }}" />
                 <input type="button" value="검색" onclick="post_search()" />
             </div>
         </div>
@@ -21,21 +22,27 @@
         <table class="table table-hover table-striped text-center">
             <thead>
                 <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성일</th>
-                    <th>작성자</th>
-                    <th>조회수</th>
+                    <th class="col-md-1">번호</th>
+                    <th class="col-md-5">제목</th>
+                    <th class="col-md-2">작성일</th>
+                    <th class="col-md-1">작성자</th>
+                    <th class="col-md-1">조회수</th>
+                    <th style="display: none"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for post in post_list %}
-                <tr class="post_detail_tr" post_id="{{ post.POST_ID }}">
-                    <td>{{ forloop.counter }}</td>
+                <tr class="post_detail_tr">
+                    {% with postNum=forloop.counter|sub:1 pageCnt=page_num|sub:1|mul:view_cnt %}
+                        {% with pagePostNum=postNum|add:pageCnt %}
+                            <td>{{ post_all_cnt|sub:pagePostNum }}</td>
+                        {% endwith %}
+                    {% endwith %}
                     <td>{{ post.POST_TITLE }}</td>
-                    <td>{{ post.REG_DT }}</td>
+                    <td>{{ post.REG_DT|slice:'0:4' }}-{{ post.REG_DT|slice:'4:6' }}-{{ post.REG_DT|slice:'6:8' }}</td>
                     <td>{{ post.REG_USER_ID }}</td>
                     <td>{{ post.VIEW_CNT }}</td>
+                    <td class="postIdTd" style="display: none">{{ post.POST_ID }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -51,17 +58,17 @@
             {% for i in 'x'|rjust:page_len %}
                 {% if forloop.counter == page_num %}
                     <li>
-                        <p class="text-secondary" style="margin-right: 10px; font-size: 20px;">
-                            {{ forloop.counter }}
-                        </p>
+                        <input type="button" class="text-primary"
+                               style="margin-right: 5px; text-decoration-line: none; font-weight: bold; font-size: 20px; color: blue;"
+                               value="{{ forloop.counter }}"
+                               disabled>
                     </li>
                 {% else %}
                     <li>
-                        <a href="javascript:" class="current text-secondary"
-                           onclick="post_list('{{ forloop.counter }}')"
-                           style="margin-right: 10px; text-decoration-line: none; font-weight: bold; font-size: 20px;">
-                            {{ forloop.counter }}
-                        </a>
+                        <input type="button" class="current text-secondary"
+                               onclick="page_move('{{ forloop.counter }}')"
+                               style="margin-right: 5px; text-decoration-line: none; font-weight: bold; font-size: 20px; color: gray;"
+                               value="{{ forloop.counter }}">
                     </li>
                 {% endif %}
             {% endfor %}

@@ -42,10 +42,10 @@
         <div class="form-group">
             <label for="post_image"> 파일 </label>
             {% if post.IMAGE_VIEW_PATH %}
-                <img src="{{ post.IMAGE_VIEW_PATH }}" class="form-control" alt="post_img" style="height: 150px; width: 150px;" id="post_image">
+                <img src="{{ post.IMAGE_VIEW_PATH }}" onerror="this.src='/static/board/img/no_img.png'" class="form-control" alt="post_img" style="height: 150px; width: 150px;" id="post_image">
             {% endif %}
         </div>
-        <input id="post_id" name="post_id" type="hidden" value="{{ post.POST_ID }}">
+        <input name="post_id" type="hidden" value="{{ post.POST_ID }}">
     </form>
     <br>
     <div class="d-flex justify-content-end">

@@ -16,6 +16,14 @@
     {% if board_id %}
        AND BOARD_ID = '{{ board_id }}'
     {% endif %}
+    {% if search_word %}
+       AND
+       (
+       POST_TITLE LIKE CONCAT('%', BINARY('{{ search_word }}'), '%')
+       OR
+       POST_CONT LIKE CONCAT('%', BINARY('{{ search_word }}'), '%')
+       )
+    {% endif %}
         ORDER BY REG_DT DESC
     LIMIT {{ page_num_limit }}, {{ view_cnt }}
 {% endif %}
@@ -63,6 +71,14 @@
     {% if board_id %}
        AND BOARD_ID = '{{ board_id }}'
     {% endif %}
+    {% if search_word %}
+       AND
+       (
+       POST_TITLE LIKE CONCAT('%', BINARY('{{ search_word }}'), '%')
+       OR
+       POST_CONT LIKE CONCAT('%', BINARY('{{ search_word }}'), '%')
+       )
+    {% endif %}
 {% endif %}
 
 
@@ -101,10 +117,10 @@
                   , '{{ post_title }}'
                   , '{{ post_cont }}'
                   , DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
-                  , 'admin'
+                  , '{{ user_id }}'
                   , '127.0.0.1'
                   , DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
-                  , 'admin'
+                  , '{{ user_id }}'
                   , '127.0.0.1'
                   , 'Y'
                   , '{{ file_origin_name }}'
